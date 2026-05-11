@@ -19,22 +19,35 @@ for path in glob.glob('scratch-gui/build/**/*.js', recursive=True):
   with open(path, 'w') as f:
     f.write(contents)
 
-# Open the main file
-with open('scratch-gui/build/index.html', 'r') as f:
-    content = f.read()
 
-# 1. Change the Tab Title
-content = content.replace('<title>TurboWarp</title>', '<title>OurCloud.buzz</title>')
 
-# 2. Change the Meta Description (what shows in history/search)
-content = content.replace('A high speed Scratch mod', 'A faster project version that makes learning for kids better')
+# Define the path to the main index file
+index_path = 'scratch-gui/build/index.html'
 
-# 3. Global replacement for any other mentions in the HTML
-content = content.replace('TurboWarp', 'OurCloud.buzz')
+if os.path.exists(index_path):
+    with open(index_path, 'r', encoding='utf-8') as f:
+        content = f.read()
 
-# Save the changes back to the file
-with open('scratch-gui/build/index.html', 'w') as f:
-    f.write(content)
+    # 1. Replace the EXACT title tag you found
+    content = content.replace(
+        '<title>TurboWarp - Run Scratch projects faster</title>', 
+        '<title>OurCloud.buzz - Educational Learning Platform</title>'
+    )
+
+    # 2. Update the meta description to your custom version
+    content = content.replace(
+        'A high speed Scratch mod', 
+        'A faster project version that makes learning for kids better'
+    )
+
+    # 3. Global Replacement: Catch every other mention of TurboWarp
+    # This cleans up the loading screen, footer, and help menus
+    content = content.replace('TurboWarp', 'OurCloud.buzz')
+
+    with open(index_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+else:
+    print(f"Warning: {index_path} not found. Skipping stealth patch.")
 
 
 os.remove('scratch-gui/build/sw.js')
