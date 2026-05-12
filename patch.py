@@ -29,8 +29,12 @@ shutil.copy('scratch-gui/build/editor.html', 'scratch-gui/build/index.html')
 shutil.copy('robots.txt', 'scratch-gui/build/robots.txt')
 
 import os
+import re
 
-# This goes through all your website files and swaps the names
+# New Branding
+NEW_NAME = "RGWarp"
+FULL_TITLE = "RGWarp - Run projects with power" 
+
 for root, dirs, files in os.walk('scratch-gui/build'):
     for file in files:
         if file.endswith(('.html', '.js', '.json')):
@@ -38,11 +42,15 @@ for root, dirs, files in os.walk('scratch-gui/build'):
             with open(path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            # Replace the title and the brand name
+            # 1. Swap every mention of TurboWarp to RGWarp
             if 'TurboWarp' in content:
-                new_content = content.replace('TurboWarp', 'OurCloud.buzz')
-                new_content = new_content.replace('Run Scratch projects faster', 'Educational Learning Platform')
+                content = content.replace('TurboWarp', NEW_NAME)
+                
+                # 2. Specifically force the browser tab title
+                if '<title>' in content:
+                    content = re.sub(r'<title>.*?</title>', f'<title>{FULL_TITLE}</title>', content)
                 
                 with open(path, 'w', encoding='utf-8') as f:
-                    f.write(new_content)
+                    f.write(content)
+
 
